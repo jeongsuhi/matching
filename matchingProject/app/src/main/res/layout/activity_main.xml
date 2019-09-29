@@ -6,44 +6,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/colorBackground"
->
+    android:background="@color/colorBackground">
 
     <TextView
-            android:id="@+id/quiz"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Q.둘중 하나를 골라주세요"
-            android:textSize="25sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="20dp"
-    />
+            android:text="THIS IS MATCHING APPLICATION!"
+            android:textColor="@android:color/black"
+            android:textAlignment="center"
+            android:textSize="40sp"/>
 
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/start_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:theme="@style/Widget.MaterialComponents.Button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            android:text="Start!"/>
 
-    <TextView
-            android:id="@+id/answer_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/answer_right"
-            app:layout_constraintTop_toBottomOf="@id/quiz"
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/show_list_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:theme="@style/Widget.MaterialComponents.Button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/start_button"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp"
-            android:background="@color/colorAccent"
-            android:textSize="20sp"
-    />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            android:text="Show the list"/>
 
-    <TextView
-            android:id="@+id/answer_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/answer_left"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/quiz"
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/donate_button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:theme="@style/Widget.MaterialComponents.Button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/show_list_button"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp"
-            android:background="@color/colorPrimary"
-            android:textSize="20sp"
-    />
-
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            android:text="donate to us"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
