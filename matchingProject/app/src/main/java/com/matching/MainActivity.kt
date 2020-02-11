@@ -2,12 +2,11 @@ package com.matching
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import com.matching.photo.ConfirmPhotosActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,51 +14,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val startButton = findViewById<Button>(R.id.start_button)
-        startButton.setOnClickListener {
-            loadImagefromGallery()
-        }
+        setupView()
 
-    }
-
-    private fun loadImagefromGallery() {
-        //Intent 생성
-        val intent = Intent(Intent.ACTION_PICK)
-            .apply {
-                type = "image/*" //이미지만 보이게
-                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                type = android.provider.MediaStore.Images.Media.CONTENT_TYPE
-            }
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         try {
-            if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && null != data ) {
-                //data에서 절대경로로 이미지를 가져옴
-                var imageDatas = emptyList<Uri>()
-
-                if (data.clipData == null) {
-                    imageDatas = listOf(data.data ?: Uri.EMPTY)
-                } else {
-                    val clipData = data.clipData ?: return
-                    if (clipData.itemCount > 32) {
-                        Toast.makeText(this, "사진은 32장까지 선택 가능합니다.", Toast.LENGTH_LONG).show()
-                    } else if (clipData.itemCount >= 1) {
-                        val list = imageDatas.toMutableList()
-                        for (i in 0..(clipData.itemCount - 1)) {
-                            list.add(clipData.getItemAt(i).uri)
-                        }
-                        imageDatas = list.toList()
-                    } else {
-                        Toast.makeText(this, "사진이 0장 입니다.", Toast.LENGTH_LONG).show()
-                    }
-
-                }
-                Log.d("GET IMAGE TEST", "$imageDatas")
-
-                ChoosePhotosActivity.start(this, imageDatas!!)
+            if (requestCode == PICK_IMAGE_REQUEST
+                && resultCode == Activity.RESULT_OK
+                && data != null
+            ) {
+                loadImages(data)
             } else {
                 Toast.makeText(this, "취소 되었습니다.", Toast.LENGTH_LONG).show()
             }
@@ -69,6 +35,57 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
+    // view 생성
+    private fun setupView() {
+        // start button
+        findViewById<Button>(R.id.start_button).apply {
+            setOnClickListener { navigateToGallery() }
+        }
+    }
+
+    // 갤러리로 이동
+    private fun navigateToGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+            .apply {
+                type = "image/*" //이미지만 보이게
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                type = android.provider.MediaStore.Images.Media.CONTENT_TYPE
+            }
+
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Picture"),
+            PICK_IMAGE_REQUEST
+        )
+    }
+
+    // data에서 절대경로로 이미지를 가져옴
+    private fun loadImages(data: Intent) {
+        val imageDatas: List<String> = data.clipData?.let {
+            // 복수의 데이터
+            when {
+                (it.itemCount > 32) -> {
+                    Toast.makeText(this@MainActivity, "사진은 32장까지 선택 가능합니다.", Toast.LENGTH_LONG).show()
+                    return
+                }
+                (it.itemCount < 1) -> {
+                    Toast.makeText(this@MainActivity, "사진이 0장 입니다.", Toast.LENGTH_LONG).show()
+                    return
+                }
+                else -> {
+                    mutableListOf<String>().apply {
+                        for (i in 0 until it.itemCount) {
+                            add(it.getItemAt(i).uri.toString())
+                        }
+                    }
+                }
+            }
+
+        } ?: listOf(data.data.toString()) // 단수의 데이터
+
+        ConfirmPhotosActivity.start(this, imageDatas)
+    }
+
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
